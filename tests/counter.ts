@@ -15,10 +15,14 @@ describe('counter', () => {
 
     let counterSigner = anchor.web3.Keypair.generate();
 
-    // try airdrop 0.35 sol to the counterSigner
+    let minLampport = await provider.connection.getMinimumBalanceForRentExemption(8 +1 + 8);
+
+
+    // try airdrop the required minimum lamport to the counterSigner
     await provider.connection.confirmTransaction(
       await provider.connection.requestAirdrop(
-        counterSigner.publicKey, 0.35 * anchor.web3.LAMPORTS_PER_SOL
+        counterSigner.publicKey, minLampport
+        //0.35 * anchor.web3.LAMPORTS_PER_SOL
       ),"confirmed"
     );
 
