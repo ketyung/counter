@@ -21,7 +21,7 @@ describe('counter', () => {
     // try airdrop the required minimum lamport to the counterSigner
     await provider.connection.confirmTransaction(
       await provider.connection.requestAirdrop(
-        counterSigner.publicKey, minLampport
+        counterSigner.publicKey, minLampport + 2000000
         //0.35 * anchor.web3.LAMPORTS_PER_SOL
       ),"confirmed"
     );
