@@ -32,8 +32,10 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let a = await provider.connection.getAccountInfo(counter.publicKey);
-      console.log("a::", a.owner.toBase58());
+      let acc = await counterProgram.account.counter.fetch(counter.publicKey);
+      
+      console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
+      "lastUpdated::", acc.lastUpdated.toString());
 
     });
 
@@ -52,8 +54,10 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let a = await provider.connection.getAccountInfo(counter.publicKey);
-      console.log("a::", a.owner.toBase58());
+      let acc = await counterProgram.account.counter.fetch(counter.publicKey);
+      
+      console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
+      "lastUpdated::", acc.lastUpdated.toString());
 
     });
 
@@ -71,8 +75,10 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let a = await provider.connection.getAccountInfo(counter.publicKey);
-      console.log("a::", a.owner.toBase58());
+      let acc = await counterProgram.account.counter.fetch(counter.publicKey);
+      
+      console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
+      "lastUpdated::", acc.lastUpdated.toString());
 
     });
 
