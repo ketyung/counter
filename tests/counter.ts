@@ -16,7 +16,9 @@ describe('counter', () => {
       // Add your test here.
       console.log("wallet::", provider.wallet.publicKey.toBase58());
     
-      const tx = await counterProgram.rpc.initialize(11, provider.wallet.publicKey,
+      let random = Math.floor(Math.random() * 200);
+
+      const tx = await counterProgram.rpc.initialize(random, provider.wallet.publicKey,
         {
             accounts : {
                 counter : counter.publicKey, 
