@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor';
-import { IdlTypes, Program } from '@project-serum/anchor';
+import { Program } from '@project-serum/anchor';
 import { Counter } from '../target/types/counter';
 
 describe('counter', () => {
@@ -12,10 +12,13 @@ describe('counter', () => {
 
   const counterProgram = anchor.workspace.Counter as Program<Counter>;
 
-    it('Initialize the counter now!!!', async () => {
-      // Add your test here.
-      console.log("wallet::", provider.wallet.publicKey.toBase58());
+  console.log("wallet::", provider.wallet.publicKey.toBase58(), "counter account address:",
+  counter.publicKey.toBase58());
     
+
+  it('Initialize the counter now!!!', async () => {
+      // Add your test here.
+     
       let random = Math.floor(Math.random() * 200);
 
       const tx = await counterProgram.rpc.initialize(random, provider.wallet.publicKey,
@@ -36,13 +39,15 @@ describe('counter', () => {
       
       printCounterAcc(acc);
 
-    });
+  });
 
 
-    it('Increment counter now!!!', async () => {
+  it('Increment counter now!!!', async () => {
 
     
-      const tx = await counterProgram.rpc.incrementCount(
+      let num_of_times = Math.floor(Math.random() * 20);
+
+      const tx = await counterProgram.rpc.incrementCount(num_of_times, 
         {
             accounts : {
                 counter : counter.publicKey, 
@@ -57,9 +62,9 @@ describe('counter', () => {
       
       printCounterAcc(acc);
 
-    });
+  });
 
-    it('Guess counter as odd now!!!', async () => {
+  it('Guess counter as odd now!!!', async () => {
 
     
       const tx = await counterProgram.rpc.guessCountAsOdd(
@@ -77,7 +82,7 @@ describe('counter', () => {
       
       printCounterAcc(acc);
 
-    });
+  });
 
 
 });

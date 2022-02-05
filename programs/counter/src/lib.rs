@@ -23,12 +23,15 @@ pub mod counter {
     }
 
 
-    pub fn increment_count(ctx: Context<IncrementCounter>) -> ProgramResult {
+    pub fn increment_count(ctx: Context<IncrementCounter>, num_of_times_to_increment : u8 ) -> ProgramResult {
         
         let cntr = &mut ctx.accounts.counter;
 
-        cntr.increment();
+        for _n in 1..num_of_times_to_increment {
 
+            cntr.increment();
+        }
+       
         msg!("current.count ::{}", cntr.count);
     
         Ok(())
