@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor';
-import { Program } from '@project-serum/anchor';
+import { IdlTypes, Program } from '@project-serum/anchor';
 import { Counter } from '../target/types/counter';
 
 describe('counter', () => {
@@ -34,8 +34,7 @@ describe('counter', () => {
 
       let acc = await counterProgram.account.counter.fetch(counter.publicKey);
       
-      console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
-      "lastUpdated::", acc.lastUpdated.toString());
+      printCounterAcc(acc);
 
     });
 
@@ -56,8 +55,7 @@ describe('counter', () => {
 
       let acc = await counterProgram.account.counter.fetch(counter.publicKey);
       
-      console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
-      "lastUpdated::", acc.lastUpdated.toString());
+      printCounterAcc(acc);
 
     });
 
@@ -75,12 +73,19 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let acc = await counterProgram.account.counter.fetch(counter.publicKey);
+      let acc  = await counterProgram.account.counter.fetch(counter.publicKey);
       
-      console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
-      "lastUpdated::", acc.lastUpdated.toString());
+      printCounterAcc(acc);
 
     });
 
 
 });
+
+function printCounterAcc (acc : any ){
+  
+  console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
+  "lastUpdated::", new Date( parseInt( acc.lastUpdated.toString()) * 1000) ) ;
+
+}
+

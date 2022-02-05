@@ -1,4 +1,9 @@
+pub mod state;
+pub mod instructions;
+
 use anchor_lang::prelude::*;
+use instructions::*;
+
 
 declare_id!("GT4668DEGfKV1n6Nq5qetek6aF7op6f5mEc2vBg3ktJL");
 
@@ -43,86 +48,7 @@ pub mod counter {
     }
 }
 
-#[derive(Accounts)]
-pub struct Initialize<'info> {
 
-    #[account(init, payer = counter_signer, space = 8 + 1 + 32 + 8 )]
-    pub counter : Account<'info, Counter>,
-
-    #[account(mut)]
-    pub counter_signer : Signer<'info>,
-
-    pub system_program : Program<'info, System>,
-
-}
-
-
-#[derive(Accounts)]
-pub struct IncrementCounter<'info> {
-
-    #[account(mut, has_one=created_by)]
-    pub counter : Account<'info, Counter>,
-
-    pub created_by : Signer<'info>,
-
-}
-
-
-#[derive(Accounts)]
-pub struct GuessCountAsOdd<'info> {
-
-    #[account(mut,has_one=created_by)]
-    pub counter : Account<'info, Counter>,
-
-    pub created_by : Signer<'info>,
-
-}
-
-
-#[account]
-pub struct Counter {
-
-    pub count : u8,
-
-    pub created_by : Pubkey, 
-
-    pub last_updated : i64, 
-}
-
-
-impl Counter {
-
-    pub fn new(&mut self, init_value : u8, created_by : Pubkey  ) {
-
-        self.count = init_value;
-        self.created_by = created_by; 
-        self.last_updated = Clock::get().unwrap().unix_timestamp;
-
-    }
-
-    pub fn increment(&mut self) {
-
-        if  self.count < 255 {
-
-            self.count += 1 ;
-
-            self.last_updated = Clock::get().unwrap().unix_timestamp;
-
-        }
-
-    }
-
-    pub fn decrement(&mut self ) {
-
-        if self.count > 0 {
-
-            self.count -= 1; 
-            self.last_updated = Clock::get().unwrap().unix_timestamp;
-
-        }
-    }
-
-}
 
 
 
