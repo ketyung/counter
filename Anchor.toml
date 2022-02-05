@@ -6,7 +6,10 @@ url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "localnet"
-wallet = "/Users/ketyung/.config/solana/id.json"
+wallet = "/Users/ketyung/.config/solana/wallets/zzwallet.json"
+# "/Users/ketyung/.config/solana/id.json"  HYDB3uXShfH9fm8h5MaMzKVodE39AcdhkFpphXrBh9eF
+# "/Users/ketyung/.config/solana/wallets/zzwallet.json" B7p4ghrSKVdgvAMUTnYLyr9bVoYi8QWHZZQikSG99ZqT
+
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
