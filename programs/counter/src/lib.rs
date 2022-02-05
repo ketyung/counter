@@ -23,6 +23,8 @@ pub mod counter {
         let cntr = &mut ctx.accounts.counter;
 
         cntr.increment();
+
+        msg!("current.count ::{}", cntr.count);
     
         Ok(())
 
@@ -34,9 +36,8 @@ pub mod counter {
         let cntr = &mut ctx.accounts.counter;
 
         let a = cntr.count % 2;
-        msg!("is old::{}",a);
-        assert_eq!(a, 1); 
-    
+        msg!("is odd::{}, counter::{}, created_by :{:?}",a, cntr.count, cntr.created_by);
+       
         Ok(())
 
     }
