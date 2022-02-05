@@ -44,8 +44,10 @@ pub mod counter {
         let cntr = &mut ctx.accounts.counter;
 
         let a = cntr.count % 2;
-        msg!("is odd::{}, counter::{}, created_by :{:?}",a, cntr.count, cntr.created_by);
+        let mesg = format!("is odd::{}, counter::{}, created_by :{:?}",a, cntr.count, cntr.created_by);
        
+        cntr.message = mesg ;
+        
         Ok(())
 
     }
