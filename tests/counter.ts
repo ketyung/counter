@@ -2,18 +2,38 @@ import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { Counter } from '../target/types/counter';
 
-describe('counter', () => {
+describe('counter', async () => {
 
   let provider = anchor.Provider.env(); 
   // Configure the client to use the local cluster.
   anchor.setProvider(provider);
 
-  let counter = anchor.web3.Keypair.generate();
-
   const counterProgram = anchor.workspace.Counter as Program<Counter>;
 
+  let counter = anchor.web3.Keypair.generate();
+
+  let counterAddressSeed = "counterAddress";
+
+  /**
+  const [counterAddress, _bump] = await anchor.web3.PublicKey.findProgramAddress(
+
+    [
+      Buffer.from(counterAddressSeed),
+    ],
+
+    counterProgram.programId
+  );  */
+
+
+  // let counterAddress = await anchor.web3.PublicKey.createWithSeed(counter.publicKey, 
+  // counterAddressSeed, counterProgram.programId );
+
+
+   let counterAddress = counter.publicKey;
+  
+ 
   console.log("wallet::", provider.wallet.publicKey.toBase58(), "counter account address:",
-  counter.publicKey.toBase58());
+  counterAddress.toBase58());
     
 
   it('Initialize the counter now!!!', async () => {
@@ -24,7 +44,7 @@ describe('counter', () => {
       const tx = await counterProgram.rpc.initialize(random, provider.wallet.publicKey,
         {
             accounts : {
-                counter : counter.publicKey, 
+                counter : counterAddress, 
                 counterSigner: provider.wallet.publicKey,
                 systemProgram : anchor.web3.SystemProgram.programId,
             }
@@ -35,7 +55,7 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let acc = await counterProgram.account.counter.fetch(counter.publicKey);
+      let acc = await counterProgram.account.counter.fetch(counterAddress);
       
       printCounterAcc(acc);
 
@@ -50,7 +70,7 @@ describe('counter', () => {
       const tx = await counterProgram.rpc.incrementCount(num_of_times, 
         {
             accounts : {
-                counter : counter.publicKey, 
+                counter : counterAddress, 
                 createdBy: provider.wallet.publicKey,
             }
         }
@@ -58,7 +78,7 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let acc = await counterProgram.account.counter.fetch(counter.publicKey);
+      let acc = await counterProgram.account.counter.fetch(counterAddress);
       
       printCounterAcc(acc);
 
@@ -70,7 +90,7 @@ describe('counter', () => {
       const tx = await counterProgram.rpc.guessCountAsOdd(
         {
             accounts : {
-                counter : counter.publicKey, 
+                counter : counterAddress, 
                 createdBy: provider.wallet.publicKey,
             }
         }
@@ -78,7 +98,7 @@ describe('counter', () => {
       
       console.log("Your transaction signature", tx);
 
-      let acc  = await counterProgram.account.counter.fetch(counter.publicKey);
+      let acc  = await counterProgram.account.counter.fetch(counterAddress);
       
       printCounterAcc(acc);
 
