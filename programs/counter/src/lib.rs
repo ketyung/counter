@@ -16,6 +16,17 @@ pub mod counter {
         Ok(())
 
     }
+
+
+    pub fn increment_count(ctx: Context<IncrementCounter>) -> ProgramResult {
+        
+        let cntr = &mut ctx.accounts.counter;
+
+        cntr.increment();
+    
+        Ok(())
+
+    }
 }
 
 #[derive(Accounts)]
@@ -30,6 +41,19 @@ pub struct Initialize<'info> {
     pub system_program : Program<'info, System>,
 
 }
+
+
+#[derive(Accounts)]
+pub struct IncrementCounter<'info> {
+
+    #[account(mut)]
+    pub counter : Account<'info, Counter>,
+
+    pub counter_signer : Signer<'info>,
+
+}
+
+
 
 #[account]
 pub struct Counter {
@@ -54,6 +78,9 @@ impl Counter {
         if  self.count < 255 {
 
             self.count += 1 ;
+
+            self.last_updated = Clock::get().unwrap().unix_timestamp;
+
         }
 
     }
@@ -63,6 +90,8 @@ impl Counter {
         if self.count > 0 {
 
             self.count -= 1; 
+            self.last_updated = Clock::get().unwrap().unix_timestamp;
+
         }
     }
 
