@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::Counter;
+use anchor_spl::{token::{Mint,TokenAccount}};
+use std::str::FromStr;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -35,3 +37,23 @@ pub struct GuessCountAsOdd<'info> {
     pub created_by : Signer<'info>,
 
 }
+
+const REWARD_TOKEN_MINT_ADDR : &str = "9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj";
+
+const REWARD_TOKEN_ACC_ADDR : &str = "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y";
+
+
+#[derive(Accounts)]
+pub struct CreateRewardTokenEscrow<'info> {
+
+     #[account(mut, signer)]
+     pub owner: AccountInfo<'info>,
+
+     #[account(address = Pubkey::from_str(REWARD_TOKEN_MINT_ADDR).unwrap())]
+     pub reward_mint: Account<'info, Mint>,
+
+     #[account(address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+     pub reward_token_account : Account <'info, TokenAccount>,
+
+}
+
