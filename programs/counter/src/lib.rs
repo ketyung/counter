@@ -10,7 +10,7 @@ declare_id!("GT4668DEGfKV1n6Nq5qetek6aF7op6f5mEc2vBg3ktJL");
 #[program]
 pub mod counter {
     use super::*;
-    pub fn initialize(ctx: Context<Initialize>, init_value : u8, created_by : Pubkey ) -> ProgramResult {
+    pub fn initialize(ctx: Context<Initialize>,  init_value : u8, created_by : Pubkey ) -> ProgramResult {
         
         let cntr = &mut ctx.accounts.counter;
 

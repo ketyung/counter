@@ -6,7 +6,7 @@ use anchor_spl::{token::{Mint,TokenAccount}};
 #[derive(Accounts)]
 pub struct Initialize<'info> {
 
-    #[account(init, payer = counter_signer, space = 8 + 1 + 32 + 8 )]
+    #[account(init, payer = counter_signer, space = 8 + 1 + 32 + 128 + 8 )]
     pub counter : Account<'info, Counter>,
 
     #[account(mut)]

@@ -15,15 +15,16 @@ describe('counter', async () => {
 
   let counterAddressSeed = "counterAddress";
 
-  /**
+  /*
   const [counterAddress, _bump] = await anchor.web3.PublicKey.findProgramAddress(
 
     [
       Buffer.from(counterAddressSeed),
+
     ],
 
     counterProgram.programId
-  );  */
+  );*/ 
 
 
   // let counterAddress = await anchor.web3.PublicKey.createWithSeed(counter.publicKey, 
@@ -42,7 +43,8 @@ describe('counter', async () => {
      
       let random = Math.floor(Math.random() * 200);
 
-      const tx = await counterProgram.rpc.initialize(random, provider.wallet.publicKey,
+      const tx = await counterProgram.rpc.initialize(
+        random, provider.wallet.publicKey,
         {
             accounts : {
                 counter : counterAddress, 
@@ -111,7 +113,9 @@ describe('counter', async () => {
 function printCounterAcc (acc : any ){
   
   console.log("count: ", acc.count, "createdBy::", acc.createdBy.toString(), 
-  "lastUpdated::", new Date( parseInt( acc.lastUpdated.toString()) * 1000) ) ;
+  "lastUpdated::", new Date( parseInt( acc.lastUpdated.toString()) * 1000),
+  
+  "message:",acc.message ) ;
 
 }
 
