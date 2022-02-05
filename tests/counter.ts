@@ -10,47 +10,21 @@ describe('counter', () => {
 
   const counterProgram = anchor.workspace.Counter as Program<Counter>;
 
-  it('Initialize the counter!', async () => {
+  it('Initialize the counter now!!!', async () => {
     // Add your test here.
 
-    let counterSigner = anchor.web3.Keypair.generate();
-
-    let minLampport = await provider.connection.getMinimumBalanceForRentExemption(8 +1 + 8);
-
-
-    // try airdrop the required minimum lamport to the counterSigner
-    await provider.connection.confirmTransaction(
-      await provider.connection.requestAirdrop(
-        counterSigner.publicKey, minLampport + 2000000
-        //0.35 * anchor.web3.LAMPORTS_PER_SOL
-      ),"confirmed"
-    );
-
-    console.log("balance of counterSigner ",counterSigner.publicKey.toBase58(),  
-    "::", await provider.connection.getBalance(counterSigner.publicKey));
-    
-    //let counterAddr = 
-    //await anchor.web3.PublicKey.createWithSeed(provider.wallet.publicKey, "ctr00", program.programId);
- 
-    let [counterAddr,_]  = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from(anchor.utils.bytes.utf8.encode("ctr00"))],
-        counterProgram.programId,
-    ); 
+    let counter = anchor.web3.Keypair.generate();
 
   
-    //console.log("generated.counter.addr:", counterAddr.toBase58());
-
-    //console.log("program.id::", counterProgram.programId.toBase58());
-
     const tx = await counterProgram.rpc.initialize(11,
       {
           accounts : {
-              counter : counterAddr, 
+              counter : counter.publicKey, 
               counterSigner: provider.wallet.publicKey,
               systemProgram : anchor.web3.SystemProgram.programId,
           }
           ,
-          signers : [counterSigner]
+          signers : [counter]
       }
     );
     
