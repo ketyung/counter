@@ -1,8 +1,8 @@
 pub mod state;
-pub mod instructions;
+pub mod contexts;
 
 use anchor_lang::prelude::*;
-use instructions::*;
+use contexts::*;
 
 
 declare_id!("GT4668DEGfKV1n6Nq5qetek6aF7op6f5mEc2vBg3ktJL");
