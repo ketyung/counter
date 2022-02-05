@@ -39,6 +39,8 @@ pub struct GuessCountAsOdd<'info> {
 }
 
 
+pub  const TOKEN_REWARD_VAULT_PDA_SEED: &[u8] = b"reward_vault";
+
 #[derive(Accounts)]
 #[instruction(mint_bump: u8)]
 pub struct CreateRewardTokenEscrow<'info> {
