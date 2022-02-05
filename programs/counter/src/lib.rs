@@ -14,9 +14,10 @@ pub mod counter {
         
         let cntr = &mut ctx.accounts.counter;
 
-        msg!("init_value {}, the signer is {:?}", init_value, ctx.accounts.counter_signer.key());
+        let mesg = format!("init_value {}, the signer is {:?}", init_value, ctx.accounts.counter_signer.key());
 
         cntr.new (init_value, created_by);
+        cntr.message = mesg ;
 
         Ok(())
 
@@ -32,8 +33,7 @@ pub mod counter {
             cntr.increment();
         }
        
-        msg!("current.count ::{}", cntr.count);
-    
+      
         Ok(())
 
     }
@@ -47,7 +47,7 @@ pub mod counter {
         let mesg = format!("is odd::{}, counter::{}, created_by :{:?}",a, cntr.count, cntr.created_by);
        
         cntr.message = mesg ;
-        
+
         Ok(())
 
     }
