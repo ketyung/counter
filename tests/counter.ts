@@ -14,10 +14,9 @@ describe('counter', () => {
 
     it('Initialize the counter now!!!', async () => {
       // Add your test here.
-
-      
+      console.log("wallet::", provider.wallet.publicKey.toBase58());
     
-      const tx = await counterProgram.rpc.initialize(11,
+      const tx = await counterProgram.rpc.initialize(11, provider.wallet.publicKey,
         {
             accounts : {
                 counter : counter.publicKey, 
@@ -44,7 +43,7 @@ describe('counter', () => {
         {
             accounts : {
                 counter : counter.publicKey, 
-                counterSigner: provider.wallet.publicKey,
+                createdBy: provider.wallet.publicKey,
             }
         }
       );
@@ -55,4 +54,25 @@ describe('counter', () => {
       console.log("a::", a.owner.toBase58());
 
     });
+
+    it('Guess counter as odd now!!!', async () => {
+
+    
+      const tx = await counterProgram.rpc.guessCountAsOdd(
+        {
+            accounts : {
+                counter : counter.publicKey, 
+                createdBy: provider.wallet.publicKey,
+            }
+        }
+      );
+      
+      console.log("Your transaction signature", tx);
+
+      let a = await provider.connection.getAccountInfo(counter.publicKey);
+      console.log("a::", a.owner.toBase58());
+
+    });
+
+
 });
