@@ -8,6 +8,7 @@ describe('counter', async () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(provider);
 
+
   const counterProgram = anchor.workspace.Counter as Program<Counter>;
 
   let counter = anchor.web3.Keypair.generate();
