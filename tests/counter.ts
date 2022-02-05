@@ -38,9 +38,21 @@ describe('counter', async () => {
   counterAddress.toBase58());
     
 
-  it('Initialize the counter now!!!', async () => {
+  await executeForWallet2(counterProgram, provider, counterAddress, counter);
+
+});
+
+
+
+async function executeForWallet2(counterProgram : Program<Counter>, provider : anchor.Provider, 
+  counterAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
+
+
+    console.log("execute all test for wallet2");
+    
+    it('Initialize the counter now!!!', async () => {
       // Add your test here.
-     
+    
       let random = Math.floor(Math.random() * 200);
 
       const tx = await counterProgram.rpc.initialize(
@@ -52,7 +64,7 @@ describe('counter', async () => {
                 systemProgram : anchor.web3.SystemProgram.programId,
             }
             ,
-            signers : [counter]
+            signers : [signer]
         }
       );
       
@@ -107,8 +119,9 @@ describe('counter', async () => {
 
   });
 
+}
 
-});
+
 
 function printCounterAcc (acc : any ){
   

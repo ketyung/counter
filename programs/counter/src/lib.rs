@@ -55,6 +55,9 @@ pub mod counter {
 
     pub fn change_authority_of_reward_token(_ctx : Context<CreateRewardTokenEscrow>) -> ProgramResult{
 
+
+        let (_pda, _bump) = Pubkey::find_program_address(&[TOKEN_REWARD_VAULT_PDA_SEED],  _ctx.program_id);
+
        
         Ok(())
     }

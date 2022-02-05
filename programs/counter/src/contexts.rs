@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::Counter;
-use anchor_spl::{token::{Mint,TokenAccount}};
-//use std::str::FromStr;
+use anchor_spl::{token::{Mint,TokenAccount, SetAuthority, Transfer}};
+use std::str::FromStr;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -39,7 +39,9 @@ pub struct GuessCountAsOdd<'info> {
 }
 
 
-pub  const TOKEN_REWARD_VAULT_PDA_SEED: &[u8] = b"reward_vault";
+const REWARD_TOKEN_ACC_ADDR : &str = "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y";
+
+pub const TOKEN_REWARD_VAULT_PDA_SEED: &[u8] = b"reward_vault";
 
 #[derive(Accounts)]
 #[instruction(mint_bump: u8)]
@@ -58,15 +60,39 @@ pub struct CreateRewardTokenEscrow<'info> {
     )]
     pub reward_mint: Account<'info, Mint>,
 
-     //#[account(address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
-     
+    #[account(address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+    pub reward_token_account :  Account <'info, TokenAccount>,
+
+    
     pub reward_token_pda : Account <'info, TokenAccount>,
 
-     pub token_program: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
 
-     pub system_program: AccountInfo<'info>,
+    pub system_program: AccountInfo<'info>,
 
-     pub rent: Sysvar<'info, Rent>,
+    pub rent: Sysvar<'info, Rent>,
 
 }
 
+impl <'info> CreateRewardTokenEscrow <'info> {
+
+    pub fn into_set_authority_context(&self) -> CpiContext<'_, '_, '_, 'info, SetAuthority<'info>> {
+        let cpi_accounts = SetAuthority {
+            account_or_mint: self.reward_token_account.to_account_info().clone(),
+            current_authority: self.signer.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
+
+    pub fn into_transfer_to_pda_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
+        let cpi_accounts = Transfer {
+            from: self
+                .reward_token_account
+                .to_account_info()
+                .clone(),
+            to: self.reward_token_pda.to_account_info().clone(),
+            authority: self.signer.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
+}
