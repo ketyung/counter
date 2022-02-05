@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::Counter;
 use anchor_spl::{token::{Mint,TokenAccount}};
-use std::str::FromStr;
+//use std::str::FromStr;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -38,22 +38,33 @@ pub struct GuessCountAsOdd<'info> {
 
 }
 
-const REWARD_TOKEN_MINT_ADDR : &str = "9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj";
-
-const REWARD_TOKEN_ACC_ADDR : &str = "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y";
-
 
 #[derive(Accounts)]
+#[instruction(mint_bump: u8)]
 pub struct CreateRewardTokenEscrow<'info> {
 
      #[account(mut, signer)]
-     pub owner: AccountInfo<'info>,
+     pub signer: AccountInfo<'info>,
 
-     #[account(address = Pubkey::from_str(REWARD_TOKEN_MINT_ADDR).unwrap())]
-     pub reward_mint: Account<'info, Mint>,
+     #[account(
+        init,
+        seeds = [b"reward-mint-seed".as_ref()],
+        bump = mint_bump,
+        payer = signer,
+        mint::decimals = 6,
+        mint::authority = signer,
+    )]
+    pub reward_mint: Account<'info, Mint>,
 
-     #[account(address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
-     pub reward_token_account : Account <'info, TokenAccount>,
+     //#[account(address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+     
+    pub reward_token_pda : Account <'info, TokenAccount>,
+
+     pub token_program: AccountInfo<'info>,
+
+     pub system_program: AccountInfo<'info>,
+
+     pub rent: Sysvar<'info, Rent>,
 
 }
 

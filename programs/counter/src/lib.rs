@@ -51,6 +51,11 @@ pub mod counter {
     }
 
 
+    pub fn change_authority_of_reward_token(_ctx : Context<CreateRewardTokenEscrow>) -> ProgramResult{
+
+       
+        Ok(())
+    }
 }
 
 
