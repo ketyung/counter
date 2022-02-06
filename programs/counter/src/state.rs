@@ -62,3 +62,16 @@ impl Counter {
     }
 
 }
+
+
+#[account]
+pub struct RewardVaultInfo {
+
+    pub pda : Pubkey,
+
+    pub bump : u8,
+    
+    pub created_by : Pubkey, 
+
+    pub last_updated : i64, 
+}

@@ -3,7 +3,8 @@ pub mod contexts;
 
 use anchor_lang::prelude::*;
 use contexts::*;
-
+use spl_token::instruction::AuthorityType;
+use anchor_spl::token::{self};
 
 declare_id!("GT4668DEGfKV1n6Nq5qetek6aF7op6f5mEc2vBg3ktJL");
 
@@ -53,12 +54,27 @@ pub mod counter {
     }
 
 
-    pub fn change_authority_of_reward_token(_ctx : Context<CreateRewardTokenEscrow>) -> ProgramResult{
+    pub fn change_reward_token_authority(_ctx : Context<CreateRewardTokenEscrow>) -> ProgramResult{
 
 
         let (_pda, _bump) = Pubkey::find_program_address(&[TOKEN_REWARD_VAULT_PDA_SEED],  _ctx.program_id);
 
-       
+        // save the PDA info to reward info
+        // which will be useful later
+        let reward_info = &mut _ctx.accounts.reward_info;
+        reward_info.pda = _pda; 
+        reward_info.bump = _bump;
+        reward_info.created_by = *_ctx.accounts.signer.key;
+        reward_info.last_updated = Clock::get().unwrap().unix_timestamp;
+
+
+        // set the authority to the PDA
+        token::set_authority(
+            _ctx.accounts.into_set_authority_context(),
+            AuthorityType::AccountOwner,
+            Some(_pda),
+        )?;
+
         Ok(())
     }
 }

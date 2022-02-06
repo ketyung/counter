@@ -1,6 +1,7 @@
 import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { Counter } from '../target/types/counter';
+import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 
 describe('counter', async () => {
 
@@ -11,11 +12,11 @@ describe('counter', async () => {
 
   const counterProgram = anchor.workspace.Counter as Program<Counter>;
 
-  let counter = anchor.web3.Keypair.generate();
-
+ 
+ 
+  /*
   let counterAddressSeed = "counterAddress";
 
-  /*
   const [counterAddress, _bump] = await anchor.web3.PublicKey.findProgramAddress(
 
     [
@@ -30,25 +31,78 @@ describe('counter', async () => {
   // let counterAddress = await anchor.web3.PublicKey.createWithSeed(counter.publicKey, 
   // counterAddressSeed, counterProgram.programId );
 
+  // wallet 1 
+  if ( provider.wallet.publicKey.toBase58() === "HYDB3uXShfH9fm8h5MaMzKVodE39AcdhkFpphXrBh9eF"){
 
-   let counterAddress = counter.publicKey;
-  
- 
-  console.log("wallet::", provider.wallet.publicKey.toBase58(), "counter account address:",
-  counterAddress.toBase58());
+      let rewardInfo = anchor.web3.Keypair.generate();
+
+      let rewardInfoAddr = rewardInfo.publicKey;
+
+      await executeForWallet1(counterProgram, provider, rewardInfoAddr, rewardInfo);
+      
+  }
+  // wallet 2
+  else if ( provider.wallet.publicKey.toBase58() === "B7p4ghrSKVdgvAMUTnYLyr9bVoYi8QWHZZQikSG99ZqT") {
+
+
+      let counter = anchor.web3.Keypair.generate();
+
+      let counterAddress = counter.publicKey;
     
+    
+      await executeForWallet2(counterProgram, provider, counterAddress, counter);
 
-  await executeForWallet2(counterProgram, provider, counterAddress, counter);
+  }
+
 
 });
 
+
+
+async function executeForWallet1 (counterProgram : Program<Counter>, provider : anchor.Provider, 
+  rewardInfoAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
+
+
+    console.log("execute all test for wallet 1 : ", provider.wallet.publicKey.toBase58());
+   
+    it("Set the authority of the reward token to PDA", async () =>{
+
+        let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
+      
+        let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
+        
+
+        const tx = await counterProgram.rpc.changeRewardTokenAuthority({
+
+            accounts : {
+                rewardInfo : rewardInfoAddress,
+                rewardMint : rewardMint,
+                rewardTokenAccount : rewardTokenAcc,
+                signer : provider.wallet.publicKey,
+                tokenProgram : TOKEN_PROGRAM_ID, 
+                systemProgram : anchor.web3.SystemProgram.programId,
+                rent : anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+            signers : [signer]
+        });
+
+        
+        console.log("Your transaction signature", tx);
+
+        let acc = await counterProgram.account.rewardVaultInfo.fetch(rewardInfoAddress);
+        
+        printRewardInfoAcc(acc);
+
+    });
+
+}
 
 
 async function executeForWallet2(counterProgram : Program<Counter>, provider : anchor.Provider, 
   counterAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
 
 
-    console.log("execute all test for wallet2");
+    console.log("execute all test for wallet2 : ", provider.wallet.publicKey.toBase58());
     
     it('Initialize the counter now!!!', async () => {
       // Add your test here.
@@ -121,6 +175,14 @@ async function executeForWallet2(counterProgram : Program<Counter>, provider : a
 
 }
 
+
+
+function printRewardInfoAcc (acc : any ){
+  
+  console.log("pda: ", acc.pda, " bump: ", acc.bump, " createdBy::", acc.createdBy.toString(), 
+  " lastUpdated::", new Date( parseInt( acc.lastUpdated.toString()) * 1000)) ;
+
+}
 
 
 function printCounterAcc (acc : any ){

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
-use crate::state::Counter;
-use anchor_spl::{token::{Mint,TokenAccount, SetAuthority, Transfer}};
+use crate::state::{Counter, RewardVaultInfo};
+use anchor_spl::{token::{Mint,TokenAccount, SetAuthority}};
 use std::str::FromStr;
 
 #[derive(Accounts)]
@@ -38,6 +38,7 @@ pub struct GuessCountAsOdd<'info> {
 
 }
 
+const REWARD_TOKEN_ADDR : &str = "9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj";
 
 const REWARD_TOKEN_ACC_ADDR : &str = "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y";
 
@@ -47,24 +48,17 @@ pub const TOKEN_REWARD_VAULT_PDA_SEED: &[u8] = b"reward_vault";
 #[instruction(mint_bump: u8)]
 pub struct CreateRewardTokenEscrow<'info> {
 
-     #[account(mut, signer)]
-     pub signer: AccountInfo<'info>,
+    #[account(init, payer = signer, space = 8 + 32 + 1 + 32 + 8 )]
+    pub reward_info : Account<'info, RewardVaultInfo>,
 
-     #[account(
-        init,
-        seeds = [b"reward-mint-seed".as_ref()],
-        bump = mint_bump,
-        payer = signer,
-        mint::decimals = 6,
-        mint::authority = signer,
-    )]
+    #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
     pub reward_mint: Account<'info, Mint>,
 
-    #[account(address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+    #[account(mut, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
     pub reward_token_account :  Account <'info, TokenAccount>,
 
-    
-    pub reward_token_pda : Account <'info, TokenAccount>,
+    #[account(mut, signer)]
+    pub signer: AccountInfo<'info>,
 
     pub token_program: AccountInfo<'info>,
 
@@ -84,6 +78,7 @@ impl <'info> CreateRewardTokenEscrow <'info> {
         CpiContext::new(self.token_program.clone(), cpi_accounts)
     }
 
+    /*
     pub fn into_transfer_to_pda_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
         let cpi_accounts = Transfer {
             from: self
@@ -94,5 +89,5 @@ impl <'info> CreateRewardTokenEscrow <'info> {
             authority: self.signer.clone(),
         };
         CpiContext::new(self.token_program.clone(), cpi_accounts)
-    }
+    }*/
 }
