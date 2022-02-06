@@ -44,11 +44,13 @@ const REWARD_TOKEN_ACC_ADDR : &str = "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY
 
 pub const TOKEN_REWARD_VAULT_PDA_SEED: &[u8] = b"reward_vault";
 
+const REWARD_INFO_ACC_SIZE : usize = 8 + 32 + 1 + 32 + 32 + 32 + 8;
+
 #[derive(Accounts)]
 #[instruction(mint_bump: u8)]
 pub struct CreateRewardTokenEscrow<'info> {
 
-    #[account(init, payer = signer, space = 8 + 32 + 1 + 32 + 8 )]
+    #[account(init, payer = signer, space = REWARD_INFO_ACC_SIZE )]
     pub reward_info : Account<'info, RewardVaultInfo>,
 
     #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
@@ -65,6 +67,31 @@ pub struct CreateRewardTokenEscrow<'info> {
     pub system_program: AccountInfo<'info>,
 
 //    pub rent: Sysvar<'info, Rent>,
+
+}
+
+
+#[derive(Accounts)]
+#[instruction(mint_bump: u8)]
+pub struct TestStoreRewardInfo<'info> {
+
+    #[account(init, payer = signer, space = REWARD_INFO_ACC_SIZE )]
+    pub reward_info : Account<'info, RewardVaultInfo>,
+
+    // #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
+    pub reward_mint: Account<'info, Mint>,
+
+    #[account(mut)]//, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+    pub reward_token_account :  Account <'info, TokenAccount>,
+
+   // #[account(mut, signer)]
+   // pub signer: AccountInfo<'info>,
+
+    #[account(mut)]
+    pub signer : Signer<'info>,
+
+    pub system_program: AccountInfo<'info>,
+
 
 }
 

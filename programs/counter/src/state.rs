@@ -70,6 +70,10 @@ pub struct RewardVaultInfo {
     pub pda : Pubkey,
 
     pub bump : u8,
+
+    pub token_mint : Pubkey,
+
+    pub token_account : Pubkey,
     
     pub created_by : Pubkey, 
 

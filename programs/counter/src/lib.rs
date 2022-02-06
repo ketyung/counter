@@ -77,6 +77,27 @@ pub mod counter {
 
         Ok(())
     }
+
+
+    pub fn test_store_reward_token_info(_ctx : Context<TestStoreRewardInfo>) -> ProgramResult{
+
+
+        let (_pda, _bump) = Pubkey::find_program_address(&[TOKEN_REWARD_VAULT_PDA_SEED],  _ctx.program_id);
+
+        // save the PDA info to reward info
+        // which will be useful later
+        let reward_info = &mut _ctx.accounts.reward_info;
+        reward_info.pda = _pda; 
+        reward_info.bump = _bump;
+        reward_info.token_mint = _ctx.accounts.reward_mint.key() ;
+        reward_info.token_account = _ctx.accounts.reward_token_account.key() ;
+        reward_info.created_by = *_ctx.accounts.signer.key;
+        reward_info.last_updated = Clock::get().unwrap().unix_timestamp;
+
+
+
+        Ok(())
+    }
 }
 
 

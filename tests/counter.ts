@@ -65,24 +65,22 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
 
     console.log("execute all test for wallet 1 : ", provider.wallet.publicKey.toBase58());
    
-    it("Set the authority of the reward token to PDA", async () =>{
+    it("Test store reward token info", async () =>{
 
         let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
       
         // "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y"
-        let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Ua4WWDpTY3Y");
+        let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
         
 
-        const tx = await counterProgram.rpc.changeRewardTokenAuthority({
+        const tx = await counterProgram.rpc.testStoreRewardTokenInfo({
 
             accounts : {
                 rewardInfo : rewardInfoAddress,
                 rewardMint : rewardMint,
                 rewardTokenAccount : rewardTokenAcc,
                 signer : provider.wallet.publicKey,
-                tokenProgram : TOKEN_PROGRAM_ID, 
                 systemProgram : anchor.web3.SystemProgram.programId,
-                //rent : anchor.web3.SYSVAR_RENT_PUBKEY,
             },
             signers : [signer]
         });
@@ -180,8 +178,15 @@ async function executeForWallet2(counterProgram : Program<Counter>, provider : a
 
 function printRewardInfoAcc (acc : any ){
   
-  console.log("pda: ", acc.pda, " bump: ", acc.bump, " createdBy::", acc.createdBy.toString(), 
-  " lastUpdated::", new Date( parseInt( acc.lastUpdated.toString()) * 1000)) ;
+
+  console.log("pda: ", acc.pda.toBase58());
+  console.log("bump: ", acc.bump);
+  console.log("token mint::", acc.tokenMint.toBase58());
+  console.log("token account::", acc.tokenAccount.toBase58());
+
+  console.log("createdBy::", acc.createdBy.toString());
+  
+  console.log("lastUpdated::", new Date( parseInt( acc.lastUpdated.toString()) * 1000)) ;
 
 }
 
