@@ -185,6 +185,7 @@ export async function createAtaIfNotExist(
     
         );
 
+        console.log("Going to create ATA ", tokenAccount.toBase58() , " for ", tokenMintAddress.toBase58());
         
 
         const txSig = await provider.connection.sendTransaction(tx,[signer]);
