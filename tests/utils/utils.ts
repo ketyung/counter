@@ -12,41 +12,49 @@ export async function executeForWallet1 (counterProgram : Program<Counter>, prov
   
       console.log("execute all test for wallet 1 : ", provider.wallet.publicKey.toBase58());
      
-      it("Test reverse reward authority", async () =>{
-  
-        //  "9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj"
-          let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
-        
-          let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
-          
-          let rewardPdaAccount = new anchor.web3.PublicKey("4v6RaEmNVtuEHEkDarA8tJhTAoMi2cS22PFXsMiNQbk");
-  
-          const tx = await counterProgram.rpc.changeRewardTokenAuthority({
-              accounts : {
-                  rewardInfo : rewardInfoAddress,
-                  rewardMint : rewardMint,
-                  rewardTokenAccount : rewardTokenAcc,
-                  signer : provider.wallet.publicKey,
-                  tokenProgram : TOKEN_PROGRAM_ID, 
-                  systemProgram : anchor.web3.SystemProgram.programId,
-              },
-              signers : [signer]
-          });
-          
-          console.log("Your transaction signature", tx);
-  
-          let acc = await counterProgram.account.rewardVaultInfo.fetch(rewardInfoAddress);
-          
-          printRewardInfoAcc(acc);
-  
-  
-  
-  
-  
-      });
-  
+      //await changeAuthorityToPda(counterProgram, provider, rewardInfoAddress, signer);
+
+      let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
+      
+      await createAtaIfNotExist(provider, provider.wallet.publicKey,rewardMint);
+
+     
   }
   
+
+  async function changeAuthorityToPda(counterProgram : Program<Counter>, provider : anchor.Provider, 
+    rewardInfoAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
+
+    it("Test change to pda authority", async () =>{
+  
+      //  "9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj"
+        let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
+      
+        let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
+        
+        let rewardPdaAccount = new anchor.web3.PublicKey("4v6RaEmNVtuEHEkDarA8tJhTAoMi2cS22PFXsMiNQbk");
+
+        const tx = await counterProgram.rpc.changeRewardTokenAuthority({
+            accounts : {
+                rewardInfo : rewardInfoAddress,
+                rewardMint : rewardMint,
+                rewardTokenAccount : rewardTokenAcc,
+                signer : provider.wallet.publicKey,
+                tokenProgram : TOKEN_PROGRAM_ID, 
+                systemProgram : anchor.web3.SystemProgram.programId,
+            },
+            signers : [signer]
+        });
+        
+        console.log("Your transaction signature", tx);
+
+        let acc = await counterProgram.account.rewardVaultInfo.fetch(rewardInfoAddress);
+        
+        printRewardInfoAcc(acc);
+
+    });
+
+  }
   
   export async function executeForWallet2(counterProgram : Program<Counter>, provider : anchor.Provider, 
     counterAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
@@ -168,7 +176,7 @@ async function transferRewardToken  (_counterProgram : Program<Counter>, provide
 
 
     const tx = await _counterProgram.rpc.testTransferFromPda(
-      new anchor.BN(1200),
+      new anchor.BN(234),
       {
 
             accounts : {
