@@ -47,7 +47,6 @@ pub const TOKEN_REWARD_VAULT_PDA_SEED: &[u8] = b"reward_vault";
 const REWARD_INFO_ACC_SIZE : usize = 8 + 32 + 1 + 32 + 32 + 32 + 8;
 
 #[derive(Accounts)]
-#[instruction(mint_bump: u8)]
 pub struct CreateRewardTokenEscrow<'info> {
 
     #[account(init, payer = signer, space = REWARD_INFO_ACC_SIZE )]
@@ -72,7 +71,6 @@ pub struct CreateRewardTokenEscrow<'info> {
 
 
 #[derive(Accounts)]
-#[instruction(mint_bump: u8)]
 pub struct TestStoreRewardInfo<'info> {
 
     #[account(init, payer = signer, space = REWARD_INFO_ACC_SIZE )]
