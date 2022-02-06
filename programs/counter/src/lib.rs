@@ -102,21 +102,34 @@ pub mod counter {
 
 
     pub fn test_transfer_from_pda(_ctx : Context<TestTransferFromRewardPda>, 
-        amount : f64) -> ProgramResult{
+        amount : u64) -> ProgramResult{
 
         let (_pda, _bump) = Pubkey::find_program_address(&[TOKEN_REWARD_VAULT_PDA_SEED],  _ctx.program_id);
 
         let seeds = &[&TOKEN_REWARD_VAULT_PDA_SEED[..], &[_bump]];
 
+        let amount_f64 : f64 = convert(amount).unwrap_or(1.0);
+
         token::transfer( _ctx.accounts.into_transfer_context()
                 .with_signer(&[&seeds[..]]),
-            ui_amount_to_amount(amount, 9),
+            ui_amount_to_amount(amount_f64, 9),
         )?;
 
 
         Ok(())
     
     }
+
+
+    
+}
+
+fn convert(x: u64) -> Result<f64, &'static str> {
+    let result = x as f64;
+    if result as u64 != x {
+        return Err("cannot convert")
+    }
+    Ok(result)
 }
 
 
