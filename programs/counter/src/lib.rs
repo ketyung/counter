@@ -110,11 +110,10 @@ pub mod counter {
 
         let amount_f64 : f64 = convert(amount).unwrap_or(1.0);
 
-        token::transfer( _ctx.accounts.into_transfer_context()
-                .with_signer(&[&seeds[..]]),
+        token::transfer( 
+            _ctx.accounts.into_transfer_context().with_signer(&[&seeds[..]]),
             ui_amount_to_amount(amount_f64, 9),
         )?;
-
 
         Ok(())
     
