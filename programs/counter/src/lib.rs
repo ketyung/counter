@@ -96,9 +96,22 @@ pub mod counter {
         reward_info.created_by = *_ctx.accounts.signer.key;
         reward_info.last_updated = Clock::get().unwrap().unix_timestamp;
 
+        Ok(())
+    }
 
+
+    pub fn test_reverse_token_authority(_ctx : Context<ReverseRewardAuthorityInfo>) -> ProgramResult{
+
+        let (_pda, _bump) = Pubkey::find_program_address(&[TOKEN_REWARD_VAULT_PDA_SEED],  _ctx.program_id);
+
+        token::set_authority(
+            _ctx.accounts.reverse_authority_context(),
+            AuthorityType::AccountOwner,
+            Some(_pda),
+        )?;
 
         Ok(())
+    
     }
 }
 

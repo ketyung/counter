@@ -126,9 +126,6 @@ pub struct ReverseRewardAuthorityInfo<'info> {
 
     pub reward_pda_account :  Account <'info, TokenAccount>,
 
-    #[account(mut, signer)]
-    pub signer: AccountInfo<'info>,
-
     pub token_program: AccountInfo<'info>,
 
     pub system_program: AccountInfo<'info>,

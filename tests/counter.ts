@@ -65,14 +65,16 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
 
     console.log("execute all test for wallet 1 : ", provider.wallet.publicKey.toBase58());
    
-    it("Test store reward token info", async () =>{
+    it("Test reverse reward authority", async () =>{
 
       //  "9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj"
         let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
       
         let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
         
+        let rewardPdaAccount = new anchor.web3.PublicKey("4v6RaEmNVtuEHEkDarA8tJhTAoMi2cS22PFXsMiNQbk");
 
+        /** 
         const tx = await counterProgram.rpc.changeRewardTokenAuthority({
 
             accounts : {
@@ -85,7 +87,19 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
             },
             signers : [signer]
         });
+        */
+        
+        const tx = await counterProgram.rpc.testReverseTokenAuthority({
 
+          accounts : {
+            rewardMint : rewardMint,
+            rewardTokenAccount : rewardTokenAcc,
+            rewardPdaAccount : rewardPdaAccount,
+            tokenProgram : TOKEN_PROGRAM_ID, 
+            systemProgram : anchor.web3.SystemProgram.programId,
+          },
+        
+        });
         
         console.log("Your transaction signature", tx);
 
