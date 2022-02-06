@@ -76,10 +76,10 @@ pub struct TestStoreRewardInfo<'info> {
     #[account(init, payer = signer, space = REWARD_INFO_ACC_SIZE )]
     pub reward_info : Account<'info, RewardVaultInfo>,
 
-    // #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
+    #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
     pub reward_mint: Account<'info, Mint>,
 
-    #[account(mut)]//, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+    #[account(mut, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
     pub reward_token_account :  Account <'info, TokenAccount>,
 
     #[account(mut, signer)]
