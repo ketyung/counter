@@ -39,7 +39,7 @@ describe('counter', async () => {
       let rewardInfoAddr = rewardInfo.publicKey;
 
       await executeForWallet1(counterProgram, provider, rewardInfoAddr, rewardInfo);
-      
+
   }
   // wallet 2
   else if ( provider.wallet.publicKey.toBase58() === "B7p4ghrSKVdgvAMUTnYLyr9bVoYi8QWHZZQikSG99ZqT") {
@@ -69,7 +69,8 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
 
         let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
       
-        let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
+        // "DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y"
+        let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Ua4WWDpTY3Y");
         
 
         const tx = await counterProgram.rpc.changeRewardTokenAuthority({
@@ -81,7 +82,7 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
                 signer : provider.wallet.publicKey,
                 tokenProgram : TOKEN_PROGRAM_ID, 
                 systemProgram : anchor.web3.SystemProgram.programId,
-                rent : anchor.web3.SYSVAR_RENT_PUBKEY,
+                //rent : anchor.web3.SYSVAR_RENT_PUBKEY,
             },
             signers : [signer]
         });

@@ -64,7 +64,7 @@ pub struct CreateRewardTokenEscrow<'info> {
 
     pub system_program: AccountInfo<'info>,
 
-    pub rent: Sysvar<'info, Rent>,
+//    pub rent: Sysvar<'info, Rent>,
 
 }
 
