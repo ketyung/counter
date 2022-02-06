@@ -82,11 +82,8 @@ pub struct TestStoreRewardInfo<'info> {
     #[account(mut)]//, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
     pub reward_token_account :  Account <'info, TokenAccount>,
 
-   // #[account(mut, signer)]
-   // pub signer: AccountInfo<'info>,
-
-    #[account(mut)]
-    pub signer : Signer<'info>,
+    #[account(mut, signer)]
+    pub signer: AccountInfo<'info>,
 
     pub system_program: AccountInfo<'info>,
 
