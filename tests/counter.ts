@@ -1,7 +1,7 @@
 import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { Counter } from '../target/types/counter';
-import {executeForWallet1, executeForWallet2} from './utils/utils';
+import {executeForWallet1, executeForWallet2Tx} from './utils/utils';
 
 
 console.log("test .me!");
@@ -48,7 +48,7 @@ describe('counter', async () => {
       let counterAddress = counter.publicKey;
     
     
-      await executeForWallet2(counterProgram, provider, counterAddress, counter);
+      await executeForWallet2Tx(counterProgram, provider, counterAddress, counter);
 
   }
   else {

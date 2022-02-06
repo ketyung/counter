@@ -126,18 +126,17 @@ export async function executeForWallet1 (counterProgram : Program<Counter>, prov
   }
   
 
-export async function executeForWallet2Tx (counterProgram : Program<Counter>, provider : anchor.Provider, 
-  counterAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
+export async function executeForWallet2Tx (_counterProgram : Program<Counter>, provider : anchor.Provider, 
+  _counterAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
 
 
-    it('tx some amount to wallet !!!', async () => {
+    it('cteate ata !!!', async () => {
       // Add your test here.
 
         let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
       
-        console.log("rewardMint::", rewardMint.toBase58());
-       
-         await createAssociatedTokenAccountIfNotExist(provider, signer, provider.wallet.publicKey,rewardMint);
+        
+        await createAtaIfNotExist(provider, signer, provider.wallet.publicKey,rewardMint);
 
     });
 
@@ -157,12 +156,20 @@ export async function findAssociatedTokenAddress(walletAddress: anchor.web3.Publ
 }
 
 
-export async function createAssociatedTokenAccountIfNotExist(
+export async function createAtaIfNotExist(
   provider : anchor.Provider, 
   signer : anchor.web3.Keypair,
   walletAddress: anchor.web3.PublicKey, 
   tokenMintAddress: anchor.web3.PublicKey){
 
+
+    await provider.connection.confirmTransaction(
+      await provider.connection.requestAirdrop(signer.publicKey, 0.2  * anchor.web3.LAMPORTS_PER_SOL),
+      "confirmed"
+    );
+
+    console.log("balance of ", signer.publicKey.toBase58(), 
+      " ::", await  provider.connection.getBalance(signer.publicKey));
 
     const tx = new anchor.web3.Transaction();
 
@@ -177,6 +184,8 @@ export async function createAssociatedTokenAccountIfNotExist(
               tokenMintAddress,tokenAccount, walletAddress, walletAddress),
     
         );
+
+        
 
         const txSig = await provider.connection.sendTransaction(tx,[signer]);
 
