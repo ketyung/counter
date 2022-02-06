@@ -1,7 +1,7 @@
 import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { Counter } from '../target/types/counter';
-import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID} from "@solana/spl-token";
 
 describe('counter', async () => {
 
@@ -73,13 +73,14 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
         let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
         
 
-        const tx = await counterProgram.rpc.testStoreRewardTokenInfo({
+        const tx = await counterProgram.rpc.changeRewardTokenAuthority({
 
             accounts : {
                 rewardInfo : rewardInfoAddress,
                 rewardMint : rewardMint,
                 rewardTokenAccount : rewardTokenAcc,
                 signer : provider.wallet.publicKey,
+                tokenProgram : TOKEN_PROGRAM_ID, 
                 systemProgram : anchor.web3.SystemProgram.programId,
             },
             signers : [signer]
@@ -91,6 +92,10 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
         let acc = await counterProgram.account.rewardVaultInfo.fetch(rewardInfoAddress);
         
         printRewardInfoAcc(acc);
+
+
+
+
 
     });
 

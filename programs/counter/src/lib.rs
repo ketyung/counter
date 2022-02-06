@@ -64,6 +64,8 @@ pub mod counter {
         let reward_info = &mut _ctx.accounts.reward_info;
         reward_info.pda = _pda; 
         reward_info.bump = _bump;
+        reward_info.token_mint = _ctx.accounts.reward_mint.key() ;
+        reward_info.token_account = _ctx.accounts.reward_token_account.key() ;
         reward_info.created_by = *_ctx.accounts.signer.key;
         reward_info.last_updated = Clock::get().unwrap().unix_timestamp;
 
