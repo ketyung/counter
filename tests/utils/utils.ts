@@ -163,6 +163,7 @@ export async function createAtaIfNotExist(
   tokenMintAddress: anchor.web3.PublicKey){
 
 
+    /*
     await provider.connection.confirmTransaction(
       await provider.connection.requestAirdrop(signer.publicKey, 0.2  * anchor.web3.LAMPORTS_PER_SOL),
       "confirmed"
@@ -170,7 +171,8 @@ export async function createAtaIfNotExist(
 
     console.log("balance of ", signer.publicKey.toBase58(), 
       " ::", await  provider.connection.getBalance(signer.publicKey));
-
+    */
+   
     const tx = new anchor.web3.Transaction();
 
     let tokenAccount = await findAssociatedTokenAddress(walletAddress, tokenMintAddress);
@@ -188,9 +190,7 @@ export async function createAtaIfNotExist(
         console.log("Going to create ATA ", tokenAccount.toBase58() , " for ", tokenMintAddress.toBase58());
         
 
-        const txSig = await provider.connection.sendTransaction(tx,[signer]);
-
-        await provider.connection.confirmTransaction(txSig, "confirmed");
+        let txSig = await provider.send(tx);
 
         console.log("tx :", txSig);
 
