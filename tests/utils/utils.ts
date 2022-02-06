@@ -130,17 +130,63 @@ export async function executeForWallet2Tx (_counterProgram : Program<Counter>, p
   _counterAddress : anchor.web3.PublicKey, signer : anchor.web3.Keypair){
 
 
-    it('cteate ata !!!', async () => {
+    it('create ata !!!', async () => {
       // Add your test here.
 
         let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
       
         
-        await createAtaIfNotExist(provider, signer, provider.wallet.publicKey,rewardMint);
+        await createAtaIfNotExist(provider, provider.wallet.publicKey,rewardMint);
 
     });
 
+
+    it('tx token to ata !!!', async () => {
+      // Add your test here.
+
+        await transferRewardToken(_counterProgram, provider, signer);
+    });
+
 }
+
+
+async function transferRewardToken  (_counterProgram : Program<Counter>, provider : anchor.Provider, 
+   signer : anchor.web3.Keypair){
+
+
+
+    let rewardMint = new anchor.web3.PublicKey("9Rth4pxB4dDyRUVB4sNNmubDhpAJ9RLbX1TU3BwCjXPj");
+    
+    let tokenAccount = await findAssociatedTokenAddress(provider.wallet.publicKey, rewardMint);
+
+    let rewardTokenAcc = new anchor.web3.PublicKey("DZeVEXM9eco1MR8MXDiFGWAPPUaVbwAv8Uz6WWDpTY3Y");
+         
+    const [ rewardPda, _bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from(anchor.utils.bytes.utf8.encode("reward_vault"))],
+      _counterProgram.programId
+    );
+
+
+    const tx = await _counterProgram.rpc.testTransferFromPda(
+      new anchor.BN(1200),
+      {
+
+            accounts : {
+              signer : signer.publicKey,
+              rewardMint : rewardMint,
+              takerTokenAccount : tokenAccount,
+              rewardTokenAccount : rewardTokenAcc,
+              rewardPdaAuthority : rewardPda,
+              tokenProgram : TOKEN_PROGRAM_ID, 
+              systemProgram : anchor.web3.SystemProgram.programId,
+          },
+      
+          signers : [signer]
+      }
+    );
+}
+
+
 
 
 export async function findAssociatedTokenAddress(walletAddress: anchor.web3.PublicKey, 
@@ -158,7 +204,6 @@ export async function findAssociatedTokenAddress(walletAddress: anchor.web3.Publ
 
 export async function createAtaIfNotExist(
   provider : anchor.Provider, 
-  signer : anchor.web3.Keypair,
   walletAddress: anchor.web3.PublicKey, 
   tokenMintAddress: anchor.web3.PublicKey){
 
@@ -172,7 +217,7 @@ export async function createAtaIfNotExist(
     console.log("balance of ", signer.publicKey.toBase58(), 
       " ::", await  provider.connection.getBalance(signer.publicKey));
     */
-   
+
     const tx = new anchor.web3.Transaction();
 
     let tokenAccount = await findAssociatedTokenAddress(walletAddress, tokenMintAddress);

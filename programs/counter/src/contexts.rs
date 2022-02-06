@@ -125,6 +125,7 @@ pub struct TestTransferFromRewardPda<'info> {
     #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
     pub reward_mint: Account<'info, Mint>,
 
+    #[account(mut)]
     pub taker_token_account :  Account <'info, TokenAccount>,
 
     #[account(mut)]
