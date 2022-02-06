@@ -4,6 +4,7 @@ pub mod contexts;
 use anchor_lang::prelude::*;
 use contexts::*;
 use spl_token::instruction::AuthorityType;
+use spl_token::ui_amount_to_amount;
 use anchor_spl::token::{self};
 
 declare_id!("GT4668DEGfKV1n6Nq5qetek6aF7op6f5mEc2vBg3ktJL");
@@ -100,15 +101,18 @@ pub mod counter {
     }
 
 
-    pub fn test_reverse_token_authority(_ctx : Context<ReverseRewardAuthorityInfo>) -> ProgramResult{
+    pub fn test_transfer_from_pda(_ctx : Context<TestTransferFromRewardPda>, 
+        amount : f64) -> ProgramResult{
 
         let (_pda, _bump) = Pubkey::find_program_address(&[TOKEN_REWARD_VAULT_PDA_SEED],  _ctx.program_id);
 
-        token::set_authority(
-            _ctx.accounts.reverse_authority_context(),
-            AuthorityType::AccountOwner,
-            Some(_pda),
+        let seeds = &[&TOKEN_REWARD_VAULT_PDA_SEED[..], &[_bump]];
+
+        token::transfer( _ctx.accounts.into_transfer_context()
+                .with_signer(&[&seeds[..]]),
+            ui_amount_to_amount(amount, 9),
         )?;
+
 
         Ok(())
     

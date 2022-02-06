@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::state::{Counter, RewardVaultInfo};
-use anchor_spl::{token::{Mint,TokenAccount, SetAuthority}};
+use anchor_spl::{token::{Mint,TokenAccount, SetAuthority, Transfer}};
 use std::str::FromStr;
 
 #[derive(Accounts)]
@@ -58,6 +58,7 @@ pub struct CreateRewardTokenEscrow<'info> {
     #[account(mut, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
     pub reward_token_account :  Account <'info, TokenAccount>,
 
+    // signer is the initializer 
     #[account(mut, signer)]
     pub signer: AccountInfo<'info>,
 
@@ -79,7 +80,6 @@ impl <'info> CreateRewardTokenEscrow <'info> {
     }
 
 
-
     /*
     pub fn into_transfer_to_pda_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
         let cpi_accounts = Transfer {
@@ -92,6 +92,7 @@ impl <'info> CreateRewardTokenEscrow <'info> {
         };
         CpiContext::new(self.token_program.clone(), cpi_accounts)
     }*/
+
 }
 
 #[derive(Accounts)]
@@ -116,15 +117,20 @@ pub struct TestStoreRewardInfo<'info> {
 
 
 #[derive(Accounts)]
-pub struct ReverseRewardAuthorityInfo<'info> {
+pub struct TestTransferFromRewardPda<'info> {
+
+    #[account(mut, signer)]
+    pub signer: AccountInfo<'info>,
 
     #[account( address = Pubkey::from_str(REWARD_TOKEN_ADDR).unwrap())]
     pub reward_mint: Account<'info, Mint>,
 
-    #[account(mut, address = Pubkey::from_str(REWARD_TOKEN_ACC_ADDR).unwrap())]
+    pub taker_token_account :  Account <'info, TokenAccount>,
+
+    #[account(mut)]
     pub reward_token_account :  Account <'info, TokenAccount>,
 
-    pub reward_pda_account :  Account <'info, TokenAccount>,
+    pub reward_pda_authority: AccountInfo<'info>,
 
     pub token_program: AccountInfo<'info>,
 
@@ -132,15 +138,18 @@ pub struct ReverseRewardAuthorityInfo<'info> {
 
 }
 
-impl <'info> ReverseRewardAuthorityInfo <'info> {
+impl <'info> TestTransferFromRewardPda <'info> {
 
-    pub fn reverse_authority_context(&self) -> CpiContext<'_, '_, '_, 'info, SetAuthority<'info>> {
-        let cpi_accounts = SetAuthority {
-            account_or_mint: self.reward_token_account.to_account_info().clone(),
-            current_authority: self.reward_pda_account.to_account_info().clone(),
+
+    pub fn into_transfer_context(&self,
+    ) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
+        let cpi_accounts = Transfer {
+            from: self.reward_token_account.to_account_info().clone(),
+            to: self.taker_token_account.to_account_info().clone(),
+            authority: self.reward_pda_authority.clone(),
         };
         CpiContext::new(self.token_program.clone(), cpi_accounts)
     }
 
-
+  
 }

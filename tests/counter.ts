@@ -13,17 +13,19 @@ describe('counter', async () => {
   const counterProgram = anchor.workspace.Counter as Program<Counter>;
 
  
+  let rewardInfo = anchor.web3.Keypair.generate();
+
+  let rewardInfoAddr = rewardInfo.publicKey;
+
+  await executeForWallet1(counterProgram, provider, rewardInfoAddr, rewardInfo);
+
  
   /*
   let counterAddressSeed = "counterAddress";
-
   const [counterAddress, _bump] = await anchor.web3.PublicKey.findProgramAddress(
-
     [
       Buffer.from(counterAddressSeed),
-
     ],
-
     counterProgram.programId
   );*/ 
 
@@ -53,6 +55,10 @@ describe('counter', async () => {
       await executeForWallet2(counterProgram, provider, counterAddress, counter);
 
   }
+  else {
+
+    console.log("None test...");
+  }
 
 
 });
@@ -74,9 +80,7 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
         
         let rewardPdaAccount = new anchor.web3.PublicKey("4v6RaEmNVtuEHEkDarA8tJhTAoMi2cS22PFXsMiNQbk");
 
-        /** 
         const tx = await counterProgram.rpc.changeRewardTokenAuthority({
-
             accounts : {
                 rewardInfo : rewardInfoAddress,
                 rewardMint : rewardMint,
@@ -86,19 +90,6 @@ async function executeForWallet1 (counterProgram : Program<Counter>, provider : 
                 systemProgram : anchor.web3.SystemProgram.programId,
             },
             signers : [signer]
-        });
-        */
-        
-        const tx = await counterProgram.rpc.testReverseTokenAuthority({
-
-          accounts : {
-            rewardMint : rewardMint,
-            rewardTokenAccount : rewardTokenAcc,
-            rewardPdaAccount : rewardPdaAccount,
-            tokenProgram : TOKEN_PROGRAM_ID, 
-            systemProgram : anchor.web3.SystemProgram.programId,
-          },
-        
         });
         
         console.log("Your transaction signature", tx);
@@ -218,4 +209,3 @@ function printCounterAcc (acc : any ){
   "message:",acc.message ) ;
 
 }
-
